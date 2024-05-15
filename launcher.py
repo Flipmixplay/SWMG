@@ -23,8 +23,7 @@ set_appearance_mode("dark")
 def sizeof_fmt(num: int | float) -> str:
     for x in ['bytes', 'KB', 'MB', 'GB']:
         if num < 1024.0:
-            return "%.1f %s" % (num, x)
-                
+            return "%.1f %s" % (num, x) 
         num /= 1024.0
     return "%.1f %s" % (num, 'TB')
 
@@ -34,9 +33,10 @@ def sizeof_fmt(num: int | float) -> str:
         value = (i * steps) / 100
         progress_bar.set(value)
         time.sleep(1)'''
-        
+def start():
+    os.system('"ShadowWizardMoneyGang.exe"')
 def dowloand():
-    url = 'https://github.com/Flipmixplay/SWMG/blob/main/SWMG.zip'
+    url = 'https://github.com/Flipmixplay/SWMG/raw/main/SWMG.zip'
     #url = 'https://github.com/Flipmixplay/SWMG/archive/refs/heads/main.zip'
     # Streaming, so we can iterate over the response.
     rs = requests.get(url, stream=True)
@@ -47,25 +47,34 @@ def dowloand():
 
     chunk_size = 1024
     num_bars = int(total_size / chunk_size)
-
     file_name = os.path.basename(url)
-
+    i=0
     with open(file_name, mode='wb') as f:
         for data in tqdm(rs.iter_content(chunk_size), total=num_bars, unit='KB', file=sys.stdout):
-            f.write(data)       
+            f.write(data)
     #Проверяем размер файла
     file_data = open(file_name, mode='rb').read()
     print('Размер скачаного файла', sizeof_fmt(len(file_data)))
     
     with zipfile.ZipFile(file_name, 'r') as zip_ref:
-        zip_ref.extractall() 
+        zip_ref.extractall()
+    if check_var.get() == "on":
+        os.remove("SWMG.zip")
     
 #графический интерфейс    
 Update_button=CTkButton(tk,text="Update",font=("MontCinabal", 40),
                  width=200,height=100,command=dowloand)
 Update_button.place(relx=0.8,rely=0.8,anchor="center")
 
-progress_bar = CTkProgressBar(tk, width=400,progress_color='green')
-progress_bar.place(x=20,y=20)
+Start_button=CTkButton(tk,text="Start",font=("MontCinabal", 40),
+                 width=200,height=100,command=start)
+Start_button.place(relx=0.8,rely=0.6,anchor="center")
+
+check_var = StringVar(value="on")
+checkbox = CTkCheckBox(tk, text="Удалить архив после установки",font=("MontCinabal", 18),
+                       variable=check_var, onvalue="on", offvalue="off")
+checkbox.place(relx=0.815,rely=0.95,anchor="center")
+#progress_bar = CTkProgressBar(tk, width=400,progress_color='green')
+#progress_bar.place(x=20,y=20)
 
 tk.mainloop()
